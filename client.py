@@ -11,6 +11,34 @@ def print_products(products):
     print('\n')
 
 
+def add_product(customers, cur_cus, products, orders, cur_ord):
+    print_products(products)
+    item = input('Введите название товара, который хотите купить\n')
+    while item not in products:
+        item = input('Введите корректное название товара, который хотите купить\n')
+    item_number = input('Введите колличество\n')
+    while not item_number.isdigit():
+        item_number = input('Введите корректное колличество\n')
+    if item not in orders[cur_cus][cur_ord].pos:
+        if products[item].check(int(item_number)):
+            orders[cur_cus][cur_ord].pos[item] = item_number
+        else:
+            print('Товара в нужном количестве нет в наличии\n')
+    else:
+        if products[item].check(item_number + customers[cur_cus].orders[cur_ord][item]):
+            orders[cur_cus][cur_ord].pos[item] += item_number
+        else:
+            print('Товара в нужном количестве нет в наличии\n')
+
+
+def del_product(customers, cur_cus, products, orders, cur_ord):
+    for i in orders[cur_cus][cur_ord].pos:
+        print(i, orders[cur_cus][i].pos[i])
+    item = input('Введите название товара, который хотите удалить\n')
+    while item not in orders[cur_cus][cur_ord].pos:
+        item = input('Введите корректное название товара, который хотите удалить\n')
+    orders[cur_cus][cur_ord].pos.pop(item)
+
 def client(customers, products, orders):
     mode = 0  # 0 - не авторизован; 1 - авторизован
     cur_cus = ''
@@ -60,23 +88,7 @@ def client(customers, products, orders):
             cur_ord = input('Введите номер заказа, в который хотите добавить товары\n')
             while cur_ord not in customers[cur_cus].orders:
                 cur_ord = input('Введите корректный номер заказа, в который хотите добавить товары\n')
-            print_products(products)
-            item = input('Введите название товара, который хотите купить\n')
-            while item not in products:
-                item = input('Введите корректное название товара, который хотите купить\n')
-            item_number = input('Введите колличество\n')
-            while not item_number.isdigit():
-                item_number = input('Введите корректное колличество\n')
-            if item not in orders[cur_cus][cur_ord].pos:
-                if products[item].check(int(item_number)):
-                    orders[cur_cus][cur_ord].pos[item] = item_number
-                else:
-                    print('Товара в нужном количестве нет в наличии\n')
-            else:
-                if products[item].check(item_number + customers[cur_cus].orders[cur_ord][item]):
-                    orders[cur_cus][cur_ord].pos[item] += item_number
-                else:
-                    print('Товара в нужном количестве нет в наличии\n')
+            add_product(customers, cur_cus, products, orders, cur_ord)
         elif cur == MY_ORD:
             for i in orders[cur_cus]:
                 print('Заказ: ', i)
@@ -100,9 +112,12 @@ def client(customers, products, orders):
             watch_ord = input('Введите номер заказа, который вы хотите проверить\n')
             while watch_ord not in customers[cur_cus].orders:
                 watch_ord = input('Введите корректный номер заказа, который вы хотите проверить\n')
-            if orders[cur_cus][watch_ord].check_all():
+            if orders[cur_cus][watch_ord].check_all(products):
                 print('Все товары в наличии! Оплачено.\n')
                 orders[cur_cus][watch_ord].status = 'Оплачено'
+                for i in orders[cur_cus][watch_ord].pos:
+                    products[i].buy(orders[cur_cus][watch_ord].pos[i], products)
+                products = get_products()
             else:
                 print('Не все товары в наличии\n')
         elif cur == CH_ORD:
@@ -111,4 +126,11 @@ def client(customers, products, orders):
             watch_ord = input('Введите номер заказа, который вы хотите изменить\n')
             while watch_ord not in customers[cur_cus].orders:
                 watch_ord = input('Введите корректный номер заказа, который вы хотите изменить\n')
-
+            choice = ['Добавить', 'Удалить', 'Изменить количество']
+            print(*choice)
+            ans = input('Выберите, что вы хотите сделать\n')
+            while ans not in choice:
+                ans = input('Выберите из предложенного, что вы хотите сделать\n')
+            if ans == choice[0]:
+                add_product(customers, cur_cus, products, orders, watch_ord)
+            #  elif ans == choice[1]:
