@@ -3,6 +3,14 @@ from data import *
 import time
 
 
+def print_products(products):
+    print('Каталог товаров:\n')
+    for i in products:
+        print('Название: %s; Цена: %s; Осталось: %s;'
+              % (products[i].name, products[i].price, products[i].q_left))
+    print('\n')
+
+
 def client(customers, products, orders):
     mode = 0  # 0 - не авторизован; 1 - авторизован
     cur_cus = ''
@@ -13,10 +21,9 @@ def client(customers, products, orders):
               '3 - Создание заказа\n'
               '4 - Добавление товаров в заказ\n'
               '5 - Подтверждение заказа\n'
-              '6 - Оплата заказа\n'
-              '7 - Просмотр списка своих заказов\n'
-              '8 - Просмотр отдельно взятого заказа\n'
-              '9 - Редактирование открытого заказа\n'
+              '6 - Просмотр списка своих заказов\n'
+              '7 - Просмотр отдельно взятого заказа\n'
+              '8 - Редактирование открытого заказа\n'
               '0 - Выход из системы')
         n = input('Введите число\n')
         if n == '0':
@@ -27,11 +34,7 @@ def client(customers, products, orders):
                 return
         cur = int(n)
         if cur == CATAL:
-            print('Каталог товаров:\n')
-            for i in products:
-                print('Название: %s; Цена: %s; Осталось: %s;'
-                      % (products[i].name, products[i].price, products[i].q_left))
-            print('\n')
+            print_products(products)
         elif cur == AUTH:
             if mode == 0:
                 log = input('Введите ваш логин\n')
@@ -47,9 +50,65 @@ def client(customers, products, orders):
         elif mode == 0:
             print('Сначала авторизуйтесь\n')
         elif cur == MAKE_ORD:
-            t = time.time()
-            orders[cur_cus].append(Order(int(t), time.ctime(), 'Создан', [], customers[cur_cus]))
-            customers[cur_cus].orders.append(int(t))
+            t = int(time.time())
+            orders[cur_cus][str(t)] = Order(str(t), time.ctime(), 'Создан', {}, customers[cur_cus])
+            customers[cur_cus].orders.append(str(t))
         elif cur == ADD_ORD:
             for i in customers[cur_cus].orders:
                 print('Заказ: ', i)
+            print(customers[cur_cus].orders)
+            cur_ord = input('Введите номер заказа, в который хотите добавить товары\n')
+            while cur_ord not in customers[cur_cus].orders:
+                cur_ord = input('Введите корректный номер заказа, в который хотите добавить товары\n')
+            print_products(products)
+            item = input('Введите название товара, который хотите купить\n')
+            while item not in products:
+                item = input('Введите корректное название товара, который хотите купить\n')
+            item_number = input('Введите колличество\n')
+            while not item_number.isdigit():
+                item_number = input('Введите корректное колличество\n')
+            if item not in orders[cur_cus][cur_ord].pos:
+                if products[item].check(int(item_number)):
+                    orders[cur_cus][cur_ord].pos[item] = item_number
+                else:
+                    print('Товара в нужном количестве нет в наличии\n')
+            else:
+                if products[item].check(item_number + customers[cur_cus].orders[cur_ord][item]):
+                    orders[cur_cus][cur_ord].pos[item] += item_number
+                else:
+                    print('Товара в нужном количестве нет в наличии\n')
+        elif cur == MY_ORD:
+            for i in orders[cur_cus]:
+                print('Заказ: ', i)
+                print('Состав:\n')
+                for j in orders[cur_cus][i].pos:
+                    print(j, orders[cur_cus][i].pos[j])
+                print('\n')
+        elif cur == CUR_ORD:
+            for i in customers[cur_cus].orders:
+                print('Заказ: ', i)
+            watch_ord = input('Введите номер заказа, который вы хотите просмотреть\n')
+            while watch_ord not in customers[cur_cus].orders:
+                watch_ord = input('Введите корректный номер заказа, который вы хотите просмотреть\n')
+            print('Заказ: ', watch_ord)
+            print('Состав:\n')
+            for j in orders[cur_cus][watch_ord].pos:
+                print(j, orders[cur_cus][watch_ord].pos[j])
+        elif cur == CHECK:
+            for i in customers[cur_cus].orders:
+                print('Заказ: ', i)
+            watch_ord = input('Введите номер заказа, который вы хотите проверить\n')
+            while watch_ord not in customers[cur_cus].orders:
+                watch_ord = input('Введите корректный номер заказа, который вы хотите проверить\n')
+            if orders[cur_cus][watch_ord].check_all():
+                print('Все товары в наличии! Оплачено.\n')
+                orders[cur_cus][watch_ord].status = 'Оплачено'
+            else:
+                print('Не все товары в наличии\n')
+        elif cur == CH_ORD:
+            for i in customers[cur_cus].orders:
+                print('Заказ: ', i)
+            watch_ord = input('Введите номер заказа, который вы хотите изменить\n')
+            while watch_ord not in customers[cur_cus].orders:
+                watch_ord = input('Введите корректный номер заказа, который вы хотите изменить\n')
+

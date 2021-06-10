@@ -16,5 +16,5 @@ def get_products():
     with open('products.csv', encoding="utf8") as csvfile:
         reader = csv.DictReader(csvfile, delimiter=';')
         for i in reader:
-            products[i['name']] = Products(i['name'], i['price'], i['q_left'])
+            products[i['name']] = Products(i['name'], i['price'], int(i['q_left']))
     return products

@@ -12,11 +12,22 @@ class Products:
         self.price = price
         self.q_left = q_left
 
+    def check(self, n):
+        if self.q_left < n:
+            return False
+        return True
+
 
 class Order:
-    def __init__(self, number: int, date: str, status: str, pos: list, client: Customer):
+    def __init__(self, number: str, date: str, status: str, pos: dict, client: Customer):
         self.number = number
         self.date = date
         self.status = status
         self.pos = pos
         self.client = client
+
+    def check_all(self):
+        for i in self.pos:
+            if self.pos[i][0] > self.pos[i][1].q_left:
+                return False
+        return True

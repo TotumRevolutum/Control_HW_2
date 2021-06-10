@@ -8,7 +8,7 @@ customers = get_customers()
 products = get_products()
 orders = {}
 for i in customers:
-    orders[i] = []
+    orders[i] = {}
 while True:
     print('Кто вы? \n1 - клиент\t 2 - администратор\n'
           '0 - завершить работу')
