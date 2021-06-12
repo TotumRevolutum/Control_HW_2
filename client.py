@@ -32,6 +32,8 @@ def add_product(customers, cur_cus, products, orders, cur_ord):
 
 
 def del_product(customers, cur_cus, products, orders, cur_ord):
+    if len(orders[cur_cus][cur_ord].pos) == 0:
+        return
     for i in orders[cur_cus][cur_ord].pos:
         print(i)
     item = input('Введите название товара, который хотите удалить\n')
@@ -41,6 +43,8 @@ def del_product(customers, cur_cus, products, orders, cur_ord):
 
 
 def change_product(customers, cur_cus, products, orders, cur_ord):
+    if len(orders[cur_cus][cur_ord].pos) == 0:
+        return
     for i in orders[cur_cus][cur_ord].pos:
         print(i)
     item = input('Введите название товара, который хотите изменить\n')
