@@ -110,9 +110,10 @@ def client(customers, products, orders):
         elif cur == MY_ORD:
             for i in orders[cur_cus]:
                 print('Заказ: ', i)
-                print('Состав:\n')
+                print('Состав:')
                 for j in orders[cur_cus][i].pos:
                     print(j, orders[cur_cus][i].pos[j])
+                print("Статус: ", orders[cur_cus][i].status)
                 print('\n')
         elif cur == CUR_ORD:
             for i in customers[cur_cus].orders:
@@ -124,6 +125,7 @@ def client(customers, products, orders):
             print('Состав:\n')
             for j in orders[cur_cus][watch_ord].pos:
                 print(j, orders[cur_cus][watch_ord].pos[j])
+            print("Статус: ", orders[cur_cus][i].status)
         elif cur == CHECK:
             for i in customers[cur_cus].orders:
                 print('Заказ: ', i)
