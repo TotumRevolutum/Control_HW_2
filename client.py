@@ -93,6 +93,7 @@ def client(customers, products, orders):
                 while customers[cur_cus].password != password:
                     password = input('Введите корректный пароль\n')
                 mode = 1
+                print('Успешно!\n')
             else:
                 print('Вы уже авторизованы\n')
         elif mode == 0:
@@ -101,6 +102,7 @@ def client(customers, products, orders):
             t = int(time.time())
             orders[cur_cus][str(t)] = Order(str(t), time.ctime(), 'Создан', {}, customers[cur_cus])
             customers[cur_cus].orders.append(str(t))
+            print('Заказ создан!\n')
         elif cur == ADD_ORD:
             for i in customers[cur_cus].orders:
                 print('Заказ: ', i)
