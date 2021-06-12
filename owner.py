@@ -28,7 +28,7 @@ def owner(customers, products, orders):
             while item not in products:
                 item = input('Введите корректное название товара, цену которого хотите изменить\n')
             price = input('Введите новую цену\n')
-            while not price.isdigit():
+            while not price.isnumeric():
                 price = input('Введите корректно новую цену\n')
             products[item].change_price(price, products)
         elif cur == CH_NUMB:
