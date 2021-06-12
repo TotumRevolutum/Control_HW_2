@@ -23,4 +23,4 @@ while True:
     if state == 1:
         client(customers, products, orders)
     else:
-        owner()
+        owner(customers, products, orders)

@@ -1,6 +1,14 @@
 import csv
 
 
+def write_file(products):
+    with open('products.csv', 'w', encoding="utf8") as csvfile:
+        writer = csv.DictWriter(csvfile, delimiter=';', fieldnames=['price', 'name', 'q_left'])
+        writer.writeheader()
+        for i in products:
+            writer.writerow({'price': products[i].price, 'name': i, 'q_left': str(products[i].q_left)})
+
+
 class Customer:
     def __init__(self, name: str, login: str, password: str, orders: list):
         self.name = name
@@ -22,11 +30,15 @@ class Products:
 
     def buy(self, n, products):
         self.q_left -= int(n)
-        with open('products.csv', 'w', encoding="utf8") as csvfile:
-            writer = csv.DictWriter(csvfile, delimiter=';', fieldnames=['price', 'name', 'q_left'])
-            writer.writeheader()
-            for i in products:
-                writer.writerow({'price': products[i].price, 'name': i, 'q_left': str(products[i].q_left)})
+        write_file(products)
+
+    def change_price(self, n: float, products):
+        self.price = int(n)
+        write_file(products)
+
+    def change_num(self, n, products):
+        self.q_left = int(n)
+        write_file(products)
 
 
 class Order:

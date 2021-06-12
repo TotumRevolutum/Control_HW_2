@@ -103,7 +103,7 @@ def client(customers, products, orders):
             cur_ord = input('Введите номер заказа, в который хотите добавить товары\n')
             while cur_ord not in customers[cur_cus].orders:
                 cur_ord = input('Введите корректный номер заказа, в который хотите добавить товары\n')
-            if orders[cur_cus][cur_ord].status == 'Оплачено':
+            if orders[cur_cus][cur_ord].status == 'Оплачен':
                 print('Заказ уже оплачен!')
                 continue
             add_product(customers, cur_cus, products, orders, cur_ord)
@@ -130,12 +130,12 @@ def client(customers, products, orders):
             watch_ord = input('Введите номер заказа, который вы хотите проверить\n')
             while watch_ord not in customers[cur_cus].orders:
                 watch_ord = input('Введите корректный номер заказа, который вы хотите проверить\n')
-            if orders[cur_cus][watch_ord].status == 'Оплачено':
+            if orders[cur_cus][watch_ord].status == 'Оплачен':
                 print('Заказ уже оплачен!')
                 continue
             if orders[cur_cus][watch_ord].check_all(products):
                 print('Все товары в наличии! Оплачено.\n')
-                orders[cur_cus][watch_ord].status = 'Оплачено'
+                orders[cur_cus][watch_ord].status = 'Оплачен'
                 for i in orders[cur_cus][watch_ord].pos:
                     products[i].buy(orders[cur_cus][watch_ord].pos[i], products)
                 products = get_products()
@@ -147,7 +147,7 @@ def client(customers, products, orders):
             watch_ord = input('Введите номер заказа, который вы хотите изменить\n')
             while watch_ord not in customers[cur_cus].orders:
                 watch_ord = input('Введите корректный номер заказа, который вы хотите изменить\n')
-            if orders[cur_cus][watch_ord].status == 'Оплачено':
+            if orders[cur_cus][watch_ord].status == 'Оплачен':
                 print('Заказ уже оплачен!')
                 continue
             choice = ['Добавить', 'Удалить', 'Изменить количество']
